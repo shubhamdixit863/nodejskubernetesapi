@@ -1,3 +1,4 @@
 nano ~/.bashrc
 alias kubectl='microk8s kubectl'
-source ~/.bashrc
+source ~/.bashrc 
+https://microk8s.io/docs/registry-built-in
