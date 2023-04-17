@@ -1,0 +1,40 @@
+# For replicaset all the meta data field of the pod will move inside spec
+apiVersion: apps/v1 #for replicaset make sure its apps/v1
+kind: ReplicaSet   #Replicaset kind 
+metadata:
+  name: webapp 
+spec:
+  selector: #it will manage all the pods where label matches key value pair app:webapp
+    matchLabels:
+      app: webapp
+  replicas: 1
+  template: 
+    metadata:  # we dont need to gives names to the pod now
+     labels:   #this label will be used to identify the pod by service
+       app: webapp  #key and value (webapp) should be same as in selector of service
+    
+    spec:
+     containers:
+      - name: webapp
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release0-5
+
+...
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: expressapp
+spec:
+  #This defines which pods are going to be represented by this service
+  # the service becomes a network endpoint for either or other services
+  # or maybe external users to connect to eg browser
+  selector: 
+    app: webapp ## the pod label we want to create service for
+    release: zero
+
+  ports:
+     - name: http #just a label
+       port: 8080   #internal port of the cluster in which pod is running
+       nodePort: 30080   # only be user when type is NodePort should be greater than 30000
+  
+  type: NodePort
